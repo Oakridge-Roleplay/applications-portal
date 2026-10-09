@@ -2,9 +2,9 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Header from '@/components/Header';
-import { DEPARTMENTS, APPLICATION_STATUS } from '@/config/config';
 import { connectToDatabase } from '@/lib/mongodb';
 import ApplicationModel from '@/models/Application';
+import { APPLICATION_STATUS, DEPARTMENTS } from '@/config/config';
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   const applications = await ApplicationModel.find({ userId: session.user.id }).sort({ createdAt: -1 });
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-white">
+    <main className="min-h-screen bg-[#050816] text-white">
       <Header />
       <div className="mx-auto max-w-7xl px-4 py-10 md:py-16">
         <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

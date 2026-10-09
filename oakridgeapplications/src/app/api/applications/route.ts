@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectToDatabase } from '@/lib/mongodb';
 import ApplicationModel from '@/models/Application';
-import DepartmentModel from '@/models/Department';
 import { notifyDiscordWebhook } from '@/lib/discord';
+import DepartmentModel from '@/models/Department';
 
 export async function POST(req: Request) {
   try {
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       submittedAt: new Date(),
     });
 
-    await notifyDiscordWebhook(dept.name, session.user.name || 'Applicant', application._id.toString());
+    await notifyDiscordWebhook(department.name, session.user.name || 'Applicant', application._id.toString());
 
     return NextResponse.redirect(new URL('/dashboard', process.env.NEXTAUTH_URL || 'http://localhost:3000'));
   } catch (error) {

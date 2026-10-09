@@ -24,7 +24,7 @@ export async function requireRole(requiredRole: string) {
     [USER_ROLES.REVIEWER]: 1,
     [USER_ROLES.ADMIN]: 2,
     [USER_ROLES.SUPER_ADMIN]: 3,
-  };
+  } as const;
 
   const userLevel = roleHierarchy[userRole as keyof typeof roleHierarchy] ?? 0;
   const requiredLevel = roleHierarchy[requiredRole as keyof typeof roleHierarchy] ?? 0;

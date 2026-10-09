@@ -1,12 +1,5 @@
-import { Metadata } from 'next';
-import './globals.css';
+import Link from 'next/link';
 import Header from '@/components/Header';
-import { DEPARTMENT } from '@/config/config';
-
-export const metadata: Metadata = {
-  title: `${DEPARTMENT.ABBREVIATION} Portal`,
-  description: DEPARTMENT.DESCRIPTION,
-};
 
 export default function HomePage() {
   return (
@@ -31,12 +24,12 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <a href="/applications" className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-500">
+              <Link href="/applications" className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-500">
                 Apply Now
-              </a>
-              <a href="/dashboard" className="rounded-xl border border-zinc-700 bg-zinc-900/80 px-6 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-500 hover:bg-zinc-800">
+              </Link>
+              <Link href="/dashboard" className="rounded-xl border border-zinc-700 bg-zinc-900/80 px-6 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-500 hover:bg-zinc-800">
                 My Dashboard
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">

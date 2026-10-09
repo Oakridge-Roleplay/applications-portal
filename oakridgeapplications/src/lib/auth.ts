@@ -9,8 +9,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID!,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+      clientId: process.env.DISCORD_CLIENT_ID || '',
+      clientSecret: process.env.DISCORD_CLIENT_SECRET || '',
       authorization: {
         params: {
           scope: 'identify email',
@@ -20,20 +20,17 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
-      if (!user?.email || !account) {
-        return false;
-      }
+      if (!user?.email || !account) return false;
 
       await connectToDatabase();
-
-      const existing = await UserModel.findOne({ discordId: user.id });
+      const existing = await UserModel.findOne({ discordId: account.providerAccountId });
 
       if (!existing) {
         await UserModel.create({
-          discordId: user.id,
+          discordId: account.providerAccountId,
           username: user.name || 'Unknown',
-          avatar: user.image || '',
           email: user.email,
+          avatar: user.image || '',
           role: 'user',
           departmentAccess: [],
         });
@@ -41,12 +38,10 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
-
     async jwt({ token, user, account }) {
       if (account && user) {
         await connectToDatabase();
-
-        const dbUser = await UserModel.findOne({ discordId: user.id });
+        const dbUser = await UserModel.findOne({ discordId: account.providerAccountId });
 
         if (dbUser) {
           token.id = dbUser._id.toString();
@@ -58,7 +53,6 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = (token.id as string) || '';
@@ -66,11 +60,7 @@ export const authOptions: NextAuthOptions = {
         session.user.departmentAccess = (token.departmentAccess as string[]) || [];
         session.user.discordId = (token.discordId as string) || '';
       }
-
       return session;
     },
-  },
-  pages: {
-    signIn: '/',
   },
 };

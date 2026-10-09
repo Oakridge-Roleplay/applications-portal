@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import { DEPARTMENTS } from '@/config/config';
 
@@ -16,7 +14,7 @@ export default function ApplicationsPage() {
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {DEPARTMENTS.map((dept) => (
-            <a
+            <Link
               key={dept.id}
               href={`/applications/${dept.id}`}
               className="group rounded-2xl border border-zinc-800 bg-zinc-900 p-6 transition duration-200 hover:border-indigo-500 hover:shadow-[0_30px_50px_rgba(99,102,241,0.12)]"
@@ -34,7 +32,7 @@ export default function ApplicationsPage() {
               <div className="mt-6 inline-flex rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition group-hover:bg-indigo-500">
                 Apply Now
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

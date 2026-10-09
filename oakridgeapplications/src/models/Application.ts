@@ -14,6 +14,8 @@ export interface IApplication extends Document {
   reviewNotes?: string;
   submittedAt: Date;
   reviewedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const AnswerSchema = new Schema<IApplicationAnswer>(

@@ -9,6 +9,8 @@ export interface IDepartment extends Document {
   description: string;
   enabled: boolean;
   reviewers: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const DepartmentSchema = new Schema<IDepartment>(

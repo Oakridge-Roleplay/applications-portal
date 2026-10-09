@@ -59,7 +59,7 @@ export default async function DepartmentApplicationPage({
   const questions = formQuestions[params.departmentId] || [];
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-white">
+    <main className="min-h-screen bg-[#050816] text-white">
       <Header />
 
       <div className="mx-auto max-w-3xl px-4 py-10 md:py-16">
@@ -80,7 +80,7 @@ export default async function DepartmentApplicationPage({
                     name={question.id}
                     required={question.required}
                     rows={5}
-                    className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-white outline-none ring-0 transition focus:border-indigo-500"
+                    className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-white outline-none transition focus:border-indigo-500"
                   />
                 ) : question.type === 'select' ? (
                   <select

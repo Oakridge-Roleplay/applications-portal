@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IApplicationQuestion {
   id: string;
   question: string;
-  type: 'text' | 'textarea' | 'select' | 'checkbox';
+  type: 'text' | 'textarea' | 'select';
   required: boolean;
   options?: string[];
 }
@@ -11,6 +11,8 @@ export interface IApplicationQuestion {
 export interface IApplicationForm extends Document {
   departmentId: string;
   questions: IApplicationQuestion[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const QuestionSchema = new Schema<IApplicationQuestion>(
@@ -19,7 +21,7 @@ const QuestionSchema = new Schema<IApplicationQuestion>(
     question: { type: String, required: true },
     type: {
       type: String,
-      enum: ['text', 'textarea', 'select', 'checkbox'],
+      enum: ['text', 'textarea', 'select'],
       required: true,
     },
     required: { type: Boolean, default: true },

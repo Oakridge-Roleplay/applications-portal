@@ -12,15 +12,14 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    await connectToDatabase();
     const user = await UserModel.findOne({ discordId: session.user.id });
     if (!user || !['admin', 'super_admin', 'reviewer'].includes(user.role)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    await connectToDatabase();
     const body = await req.json();
     const application = await ApplicationModel.findById(params.id);
-
     if (!application) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
