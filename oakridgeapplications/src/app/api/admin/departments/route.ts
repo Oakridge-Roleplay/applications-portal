@@ -13,14 +13,15 @@ export async function GET() {
     }
 
     await connectToDatabase();
+    const member = await UserModel.findOne({ discordId: session.user.id });
+    const role = member?.role || 'user';
 
-    const role = (await UserModel.findOne({ discordId: session.user.id }))?.role || 'user';
-    if (role === 'admin' || role === 'super_admin') {
-      const departments = await DepartmentModel.find().sort({ name: 1 });
-      return NextResponse.json(departments);
+    if (role !== 'admin' && role !== 'super_admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    const departments = await DepartmentModel.find().sort({ name: 1 });
+    return NextResponse.json(departments);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
@@ -34,17 +35,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { departmentId, reviewers } = body;
-
-    await connectToDatabase();
-    const department = await DepartmentModel.findOne({ id: departmentId });
-    if (!department) {
-      return NextResponse.json({ error: 'Department not found' }, { status: 404 });
+    const member = await UserModel.findOne({ discordId: session.user.id });
+    if (!member || (member.role !== 'admin' && member.role !== 'super_admin')) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    department.reviewers = reviewers || [];
-    await department.save();
+    const body = await req.json();
+    await connectToDatabase();
+
+    const department = await DepartmentModel.create({
+      id: body.id,
+      name: body.name,
+      abbreviation: body.abbreviation,
+      color: body.color || '#1d4ed8',
+      icon: body.icon || '🧾',
+      description: body.description || '',
+      enabled: body.enabled ?? true,
+      reviewers: body.reviewers || [],
+    });
 
     return NextResponse.json(department);
   } catch (error) {

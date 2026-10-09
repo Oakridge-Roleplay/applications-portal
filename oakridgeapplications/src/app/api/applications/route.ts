@@ -13,9 +13,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.formData();
-    const departmentId = String(body.get('departmentId') || '');
-    const answers = Array.from(body.entries())
+    const formData = await req.formData();
+    const departmentId = String(formData.get('departmentId') || '');
+    const answers = Array.from(formData.entries())
       .filter(([key]) => key !== 'departmentId')
       .map(([questionId, value]) => ({
         questionId,
@@ -28,8 +28,8 @@ export async function POST(req: Request) {
 
     await connectToDatabase();
 
-    const dept = await DepartmentModel.findOne({ id: departmentId });
-    if (!dept || !dept.enabled) {
+    const department = await DepartmentModel.findOne({ id: departmentId });
+    if (!department || !department.enabled) {
       return NextResponse.json({ error: 'Department not found' }, { status: 404 });
     }
 
