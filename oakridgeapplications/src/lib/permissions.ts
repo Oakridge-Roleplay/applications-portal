@@ -9,19 +9,15 @@ export async function isAuthenticated() {
 
 export async function requireAuth() {
   const session = await getServerSession(authOptions);
-  if (!session) {
+  if (!session?.user) {
     throw new Error('Unauthorized');
   }
   return session;
 }
 
 export async function requireRole(requiredRole: string) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
-    throw new Error('Unauthorized');
-  }
-
-  const userRole = (session.user as any).role;
+  const session = await requireAuth();
+  const userRole = session.user.role || USER_ROLES.USER;
 
   const roleHierarchy = {
     [USER_ROLES.USER]: 0,
@@ -30,8 +26,8 @@ export async function requireRole(requiredRole: string) {
     [USER_ROLES.SUPER_ADMIN]: 3,
   };
 
-  const userLevel = roleHierarchy[userRole] || 0;
-  const requiredLevel = roleHierarchy[requiredRole] || 0;
+  const userLevel = roleHierarchy[userRole as keyof typeof roleHierarchy] ?? 0;
+  const requiredLevel = roleHierarchy[requiredRole as keyof typeof roleHierarchy] ?? 0;
 
   if (userLevel < requiredLevel) {
     throw new Error('Forbidden');
@@ -41,15 +37,11 @@ export async function requireRole(requiredRole: string) {
 }
 
 export async function requireDepartmentAccess(departmentId: string) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
-    throw new Error('Unauthorized');
-  }
+  const session = await requireAuth();
+  const userRole = session.user.role || USER_ROLES.USER;
+  const departmentAccess = session.user.departmentAccess || [];
 
-  const userRole = (session.user as any).role;
-  const departmentAccess = (session.user as any).departmentAccess || [];
-
-  if (userRole === USER_ROLES.SUPER_ADMIN) {
+  if (userRole === USER_ROLES.SUPER_ADMIN || userRole === USER_ROLES.ADMIN) {
     return session;
   }
 
